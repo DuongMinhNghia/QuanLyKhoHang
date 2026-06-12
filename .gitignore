@@ -1,0 +1,10 @@
+# Bỏ qua thư mục build của NetBeans
+build/
+dist/
+nbproject/private/
+
+# Bỏ qua file cấu hình IDE cá nhân
+.idea/
+.vscode/
+*.iml
+*.log

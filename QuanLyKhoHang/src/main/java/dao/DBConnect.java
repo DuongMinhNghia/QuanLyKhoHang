@@ -1,0 +1,16 @@
+package dao;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+
+public class DBConnect {
+    private static final String DB_URL = "jdbc:sqlserver://localhost\\SQLEXPRESS;databaseName=QuanLyKhoHang;encrypt=false";
+    private static final String DB_USER = "sa"; 
+    private static final String DB_PASS = "123"; 
+
+    // Hàm này sẽ cấp phát một Connection mỗi khi Servlet gọi đến
+    public static Connection getConnection() throws Exception {
+        Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+        return DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
+    }
+}
