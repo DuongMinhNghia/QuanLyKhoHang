@@ -26,7 +26,7 @@ public class LoginServlet extends HttpServlet {
         String pass = request.getParameter("password");
         
         // 2. Gọi DAO để kiểm tra với Database
-        TaiKhoanDAO tkDao = new TaiKhoanDAO();
+       TaiKhoanDAO tkDao = new TaiKhoanDAO();
         taikhoan loggedInUser = tkDao.checkLogin(user, pass);
         
         // 3. Xử lý kết quả

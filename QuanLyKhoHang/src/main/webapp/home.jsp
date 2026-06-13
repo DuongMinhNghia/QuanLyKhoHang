@@ -136,7 +136,7 @@
 
             <%-- 4. NÚT QUẢN LÝ TÀI KHOẢN (Chỉ dành cho Admin) --%>
             <% if(showTaiKhoan) { %>
-            <a href="#" class="feature-card">
+            <a href="QuanLyTaiKhoanServlet" class="feature-card">
                 <div class="feature-icon">👥</div>
                 <div class="feature-title">Quản Lý Tài Khoản</div>
                 <div class="feature-desc">Cấp phát quyền và quản lý nhân sự.</div>

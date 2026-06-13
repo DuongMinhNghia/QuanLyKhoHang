@@ -510,17 +510,20 @@ VALUES (N'Unilever Việt Nam', N'Quận 7, TP.HCM', '02838123456', 'contact@uni
 (N'Abbott Việt Nam', N'Quận 1, TP.HCM', '02838123458', 'info@abbott.com');
 
 -- 5. Dữ liệu Nhân Viên (Có liên kết Bộ Phận)
+
 INSERT INTO NhanVien (MaNV, HoTen, SDT, DiaChi, NgaySinh, MaBoPhan) VALUES 
 ('NV01', N'Nguyễn Văn Thủ', '0901234567', N'Bình Thạnh, TP.HCM', '1990-05-15', 'BP01'), -- Thủ kho
 ('NV02', N'Trần Thị Trưởng', '0901234568', N'Gò Vấp, TP.HCM', '1985-08-20', 'BP01'),   -- Trưởng kho
 ('NV03', N'Lê Mua Hàng', '0901234569', N'Quận 2, TP.HCM', '1992-10-10', 'BP02'),     -- Nhân viên mua hàng
-('NV04', N'Phạm Kinh Doanh', '0901234570', N'Quận 3, TP.HCM', '1995-01-01', 'BP03'); -- Nhân viên kinh doanh
+('NV04', N'Phạm Kinh Doanh', '0901234570', N'Quận 3, TP.HCM', '1995-01-01', 'BP03'),-- Nhân viên kinh doanh
+('NV05', N'AdMin', '0901234570', N'Quận 3, TP.HCM', '1995-01-01', 'BP03');
 
 -- 6. Dữ liệu Tài Khoản
 INSERT INTO TaiKhoan (TenDangNhap, MatKhau, VaiTro, TrangThai, MaNV) VALUES 
+('admin', '123456', N'Admin', N'Hoạt động', 'NV05'),
+('giamdoc', '123456', N'Giám đốc', N'Hoạt động', 'NV04'),
 ('thukho1', '123456', N'Thủ kho', N'Hoạt động', 'NV01'),
 ('truongkho', '123456', N'Trưởng kho', N'Hoạt động', 'NV02');
-
 -- 7. Dữ liệu Hàng Hóa (FMCG theo đối tác)
 -- Lưu ý: SoLuongTonKho ban đầu để 0, sau đó tạo phiếu nhập tự động tăng
 INSERT INTO HangHoa (TenHang, DVT, SoLuongTonKho, QuyCach, HanMucTonToiThieu, MaLoai, MaViTri) 

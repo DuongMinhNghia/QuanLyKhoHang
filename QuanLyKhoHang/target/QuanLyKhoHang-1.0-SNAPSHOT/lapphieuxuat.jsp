@@ -101,8 +101,9 @@
         <% } %>
         
 
-        <% if(showTaiKhoan) { %>
-            <a href="#" class="menu-item">Quản lý tài khoản</a>
+     <% if(showTaiKhoan) { %>
+         <div class="menu-title">HỆ THỐNG</div>
+            <a href="QuanLyTaiKhoanServlet" class="menu-item active">Quản lý tài khoản</a>
         <% } %>
     </div>
 

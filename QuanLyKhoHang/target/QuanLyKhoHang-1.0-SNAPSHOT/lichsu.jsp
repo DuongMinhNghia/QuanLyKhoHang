@@ -92,8 +92,9 @@
             <a href="LichSuServlet" class="menu-item active">Lịch sử tồn kho</a>
         <% } %>
 
-        <% if(showTaiKhoan) { %>
-            <a href="#" class="menu-item">Quản lý tài khoản</a>
+     <% if(showTaiKhoan) { %>
+         <div class="menu-title">HỆ THỐNG</div>
+            <a href="QuanLyTaiKhoanServlet" class="menu-item active">Quản lý tài khoản</a>
         <% } %>
     </div>
     <div class="main-content">
@@ -121,9 +122,9 @@
                         List<HangHoa> listHH = (List<HangHoa>) request.getAttribute("danhSachHH");
                         if(listHH != null) {
                             for(HangHoa hh : listHH) {
-                                String sel = (maHangLoc != null && maHangLoc.equals(hh.getMaHH())) ? "selected" : "";
+                                String sel = (maHangLoc != null && maHangLoc.equals(hh.getMaHang())) ? "selected" : "";
                     %>
-                    <option value="<%= hh.getMaHH() %>" <%= sel %>><%= hh.getMaHH() %> - <%= hh.getTenHH() %></option>
+                    <option value="<%= hh.getMaHang() %>" <%= sel %>><%= hh.getMaHang() %> - <%= hh.getTenHang() %></option>
                     <%      }
                         } 
                     %>

@@ -14,6 +14,7 @@ C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\dao\PhieuNhapDAO.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\controller\LoginServlet.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\controller\XuLyDuyetPhieuServlet.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\model\NhaCungCap.java
+C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\dao\QuanLyTaiKhoanDAO.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\model\HangHoa.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\controller\BaoCaoServlet.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\controller\LuuPhieuXuatServlet.java
@@ -24,9 +25,11 @@ C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\controller\TimKiemHangHoaSer
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\dao\DBConnect.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\controller\KiemKeServlet.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\com\mycompany\quanlykhohang\JakartaRestConfiguration.java
+C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\controller\QuanLyTaiKhoanServlet.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\model\PhieuNhapDTO.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\controller\LapPhieuXuatServlet.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\dao\PhieuXuatDAO.java
+C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\model\TaiKhoanDTO.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\controller\LoadDanhSachPhieuNhapServlet.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\controller\LuuKiemKeServlet.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\controller\LuuPhieuNhapServlet.java

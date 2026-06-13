@@ -1,38 +1,64 @@
 package model;
 
 public class HangHoa {
-    private String maHH;
-    private String tenHH;
-    private String danhMuc;
-    private int soLuongTon;
-    private String donViTinh;
+    private String maHang;
+    private String tenHang;
+    private String dvt;
+    private int soLuongTonKho;
+    private String quyCach;
+    private int hanMucTonToiThieu;
+    private String maLoai;
+    private String maViTri;
+    
+    private String tenLoai;
+    private String tenViTri;
 
-    // Constructor rỗng
-    public HangHoa() {
+    public HangHoa() {}
+
+    public HangHoa(String maHang, String tenHang, String dvt, int soLuongTonKho, String quyCach, int hanMucTonToiThieu, String maLoai, String maViTri, String tenLoai, String tenViTri) {
+        this.maHang = maHang;
+        this.tenHang = tenHang;
+        this.dvt = dvt;
+        this.soLuongTonKho = soLuongTonKho;
+        this.quyCach = quyCach;
+        this.hanMucTonToiThieu = hanMucTonToiThieu;
+        this.maLoai = maLoai;
+        this.maViTri = maViTri;
+        this.tenLoai = tenLoai;
+        this.tenViTri = tenViTri;
     }
 
-    // Constructor đầy đủ
-    public HangHoa(String maHH, String tenHH, String danhMuc, int soLuongTon, String donViTinh) {
-        this.maHH = maHH;
-        this.tenHH = tenHH;
-        this.danhMuc = danhMuc;
-        this.soLuongTon = soLuongTon;
-        this.donViTinh = donViTinh;
+    // Constructor rút gọn để xử lý dữ liệu Form nhận về
+    public HangHoa(String maHang, String tenHang, String dvt, int soLuongTonKho, String quyCach, int hanMucTonToiThieu, String maLoai, String maViTri) {
+        this.maHang = maHang;
+        this.tenHang = tenHang;
+        this.dvt = dvt;
+        this.soLuongTonKho = soLuongTonKho;
+        this.quyCach = quyCach;
+        this.hanMucTonToiThieu = hanMucTonToiThieu;
+        this.maLoai = maLoai;
+        this.maViTri = maViTri;
     }
 
     // Các hàm Getter và Setter
-    public String getMaHH() { return maHH; }
-    public void setMaHH(String maHH) { this.maHH = maHH; }
-
-    public String getTenHH() { return tenHH; }
-    public void setTenHH(String tenHH) { this.tenHH = tenHH; }
-
-    public String getDanhMuc() { return danhMuc; }
-    public void setDanhMuc(String danhMuc) { this.danhMuc = danhMuc; }
-
-    public int getSoLuongTon() { return soLuongTon; }
-    public void setSoLuongTon(int soLuongTon) { this.soLuongTon = soLuongTon; }
-
-    public String getDonViTinh() { return donViTinh; }
-    public void setDonViTinh(String donViTinh) { this.donViTinh = donViTinh; }
+    public String getMaHang() { return maHang; }
+    public void setMaHang(String maHang) { this.maHang = maHang; }
+    public String getTenHang() { return tenHang; }
+    public void setTenHang(String tenHang) { this.tenHang = tenHang; }
+    public String getDvt() { return dvt; }
+    public void setDvt(String dvt) { this.dvt = dvt; }
+    public int getSoLuongTonKho() { return soLuongTonKho; }
+    public void setSoLuongTonKho(int soLuongTonKho) { this.soLuongTonKho = soLuongTonKho; }
+    public String getQuyCach() { return quyCach; }
+    public void setQuyCach(String quyCach) { this.quyCach = quyCach; }
+    public int getHanMucTonToiThieu() { return hanMucTonToiThieu; }
+    public void setHanMucTonToiThieu(int hanMucTonToiThieu) { this.hanMucTonToiThieu = hanMucTonToiThieu; }
+    public String getMaLoai() { return maLoai; }
+    public void setMaLoai(String maLoai) { this.maLoai = maLoai; }
+    public String getMaViTri() { return maViTri; }
+    public void setMaViTri(String maViTri) { this.maViTri = maViTri; }
+    public String getTenLoai() { return tenLoai; }
+    public void setTenLoai(String tenLoai) { this.tenLoai = tenLoai; }
+    public String getTenViTri() { return tenViTri; }
+    public void setTenViTri(String tenViTri) { this.tenViTri = tenViTri; }
 }

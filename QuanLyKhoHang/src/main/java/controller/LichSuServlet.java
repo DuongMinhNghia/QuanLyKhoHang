@@ -17,13 +17,16 @@ public class LichSuServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         taikhoan acc = (taikhoan) request.getSession().getAttribute("account");
-        if (acc == null) { response.sendRedirect("login.jsp"); return; }
+        if (acc == null) { 
+            response.sendRedirect("login.jsp"); 
+            return; 
+        }
 
-        String maHang = request.getParameter("maHangLoc");
-        
+        String maHang = request.getParameter("maHang");
+
         try (Connection conn = DBConnect.getConnection()) {
-            // Lấy danh sách hàng hóa cho ô Dropdown
-            request.setAttribute("danhSachHH", new HangHoaDAO().getAllHangHoa(conn));
+            // FIX LỖI Ở ĐÂY: Xóa chữ conn trong ngoặc của getAllHangHoa()
+            request.setAttribute("danhSachHH", new HangHoaDAO().getAllHangHoa());
             
             // Lấy lịch sử biến động
             request.setAttribute("danhSachLichSu", new LichSuDAO().getLichSuBienDong(conn, maHang));
@@ -31,10 +34,9 @@ public class LichSuServlet extends HttpServlet {
             e.printStackTrace();
         }
         
-        request.setAttribute("maHangHienTai", maHang);
         request.getRequestDispatcher("lichsu.jsp").forward(request, response);
     }
-    
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         doGet(request, response);
     }

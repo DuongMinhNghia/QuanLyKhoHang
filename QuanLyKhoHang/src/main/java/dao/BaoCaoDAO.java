@@ -15,41 +15,44 @@ public class BaoCaoDAO {
     private static final String DB_USER = "sa"; 
     private static final String DB_PASS = "123"; 
 
-  // 1. LỌC BÁO CÁO NHẬP KHO
+    // 1. LỌC BÁO CÁO NHẬP KHO
     public List<PhieuNhapDTO> getBaoCaoNhapKho(String filter) {
         List<PhieuNhapDTO> list = new ArrayList<>();
-        String sql = "SELECT pn.MaPhieu, pn.NgayLap, ncc.TenNCC, hh.TenHang, ct.SoLuong, ct.DonGia, pn.MaNguoiDuyet, pn.GhiChu "
-                   + "FROM PhieuNhapKho pn "
-                   + "JOIN NhaCungCap ncc ON pn.MaNCC = ncc.MaNCC "
-                   + "JOIN ChiTietPhieuNhapKho ct ON pn.MaPhieu = ct.MaPhieu "
-                   + "JOIN HangHoa hh ON ct.MaHang = hh.MaHang WHERE 1=1 ";
 
+        String sql = "SELECT p.MaPhieu, p.NgayLap, n.TenNCC, h.TenHang, c.SoLuong, c.DonGia, p.MaNguoiDuyet, p.GhiChu "
+                   + "FROM PhieuNhapKho p "
+                   + "JOIN ChiTietPhieuNhapKho c ON p.MaPhieu = c.MaPhieu "
+                   + "JOIN NhaCungCap n ON p.MaNCC = n.MaNCC "
+                   + "JOIN HangHoa h ON c.MaHang = h.MaHang "
+                   + "WHERE 1=1 ";
+
+        // NỐI CHUỖI LỌC DỮ LIỆU TỪ DROPDOWN
         if ("daduyet".equals(filter)) {
-            sql += "AND pn.MaNguoiDuyet IS NOT NULL ";
+            sql += "AND p.MaNguoiDuyet IS NOT NULL AND (p.GhiChu IS NULL OR p.GhiChu NOT LIKE N'Từ chối:%') ";
         } else if ("choduyet".equals(filter)) {
-            sql += "AND pn.MaNguoiDuyet IS NULL ";
+            sql += "AND p.MaNguoiDuyet IS NULL AND (p.GhiChu IS NULL OR p.GhiChu NOT LIKE N'Từ chối:%') ";
+        } else if ("tuchoi".equals(filter)) {
+            sql += "AND p.GhiChu LIKE N'Từ chối:%' ";
         }
 
-        sql += "ORDER BY pn.NgayLap DESC, pn.MaPhieu DESC";
+        sql += "ORDER BY p.MaPhieu DESC";
 
-        try {
-            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
-                 PreparedStatement ps = conn.prepareStatement(sql);
-                 ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                PhieuNhapDTO dto = new PhieuNhapDTO();
+                dto.setMaPhieu(rs.getString("MaPhieu"));
+                dto.setNgayLap(rs.getDate("NgayLap"));
+                dto.setTenNCC(rs.getString("TenNCC"));
+                dto.setTenHang(rs.getString("TenHang"));
+                dto.setSoLuong(rs.getInt("SoLuong"));
+                dto.setDonGia(rs.getDouble("DonGia"));
+                dto.setMaNguoiDuyet(rs.getString("MaNguoiDuyet"));
+                dto.setGhiChu(rs.getString("GhiChu"));
                 
-                while (rs.next()) {
-                    list.add(new PhieuNhapDTO(
-                        rs.getString("MaPhieu"), 
-                        rs.getDate("NgayLap"), 
-                        rs.getString("TenNCC"), 
-                        rs.getString("TenHang"), 
-                        rs.getInt("SoLuong"), 
-                        rs.getDouble("DonGia"), 
-                        rs.getString("MaNguoiDuyet"),
-                        rs.getString("GhiChu")
-                    ));
-                }
+                list.add(dto);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -60,37 +63,40 @@ public class BaoCaoDAO {
     // 2. LỌC BÁO CÁO XUẤT KHO
     public List<PhieuXuatDTO> getBaoCaoXuatKho(String filter) {
         List<PhieuXuatDTO> list = new ArrayList<>();
-        String sql = "SELECT px.MaPhieu, px.NgayLap, px.BoPhanNhan, hh.TenHang, ct.SoLuong, ct.DonGia, px.MaNguoiDuyet, px.MucDich "
-                   + "FROM PhieuXuatKho px "
-                   + "JOIN ChiTietPhieuXuatKho ct ON px.MaPhieu = ct.MaPhieu "
-                   + "JOIN HangHoa hh ON ct.MaHang = hh.MaHang WHERE 1=1 ";
+        
+        String sql = "SELECT p.MaPhieu, p.NgayLap, p.BoPhanNhan, h.TenHang, c.SoLuong, c.DonGia, p.MaNguoiDuyet, p.MucDich "
+                   + "FROM PhieuXuatKho p "
+                   + "JOIN ChiTietPhieuXuatKho c ON p.MaPhieu = c.MaPhieu "
+                   + "JOIN HangHoa h ON c.MaHang = h.MaHang "
+                   + "WHERE 1=1 ";
 
+        // LỌC DỮ LIỆU TỪ DROPDOWN (Bao gồm cả TỪ CHỐI)
         if ("daduyet".equals(filter)) {
-            sql += "AND px.MaNguoiDuyet IS NOT NULL ";
+            sql += "AND p.MaNguoiDuyet IS NOT NULL AND (p.MucDich IS NULL OR p.MucDich NOT LIKE N'Từ chối:%') ";
         } else if ("choduyet".equals(filter)) {
-            sql += "AND px.MaNguoiDuyet IS NULL ";
+            sql += "AND p.MaNguoiDuyet IS NULL AND (p.MucDich IS NULL OR p.MucDich NOT LIKE N'Từ chối:%') ";
+        } else if ("tuchoi".equals(filter)) {
+            sql += "AND p.MucDich LIKE N'Từ chối:%' ";
         }
 
-        sql += "ORDER BY px.NgayLap DESC, px.MaPhieu DESC";
+        sql += "ORDER BY p.MaPhieu DESC";
 
-        try {
-            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
-                 PreparedStatement ps = conn.prepareStatement(sql);
-                 ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                PhieuXuatDTO dto = new PhieuXuatDTO();
+                dto.setMaPhieu(rs.getString("MaPhieu"));
+                dto.setNgayLap(rs.getDate("NgayLap")); // Chắc chắn rằng DTO đang là kiểu Date nhé
+                dto.setBoPhanNhan(rs.getString("BoPhanNhan"));
+                dto.setTenHang(rs.getString("TenHang"));
+                dto.setSoLuong(rs.getInt("SoLuong"));
+                dto.setDonGia(rs.getDouble("DonGia"));
+                dto.setMaNguoiDuyet(rs.getString("MaNguoiDuyet"));
+                dto.setMucDich(rs.getString("MucDich"));
                 
-                while (rs.next()) {
-                    list.add(new PhieuXuatDTO(
-                        rs.getString("MaPhieu"), 
-                        rs.getDate("NgayLap"), 
-                        rs.getString("BoPhanNhan"), 
-                        rs.getString("TenHang"), 
-                        rs.getInt("SoLuong"), 
-                        rs.getDouble("DonGia"), 
-                        rs.getString("MaNguoiDuyet"),
-                        rs.getString("MucDich")     
-                    ));
-                }
+                list.add(dto);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -98,7 +104,7 @@ public class BaoCaoDAO {
         return list;
     }
 
-    // 3. Lọc Báo Cáo KIỂM KÊ (Tính toán lại Lý thuyết = Thực tế - Chênh lệch)
+    // 3. Lọc Báo Cáo KIỂM KÊ
     public List<KiemKeDTO> getBaoCaoKiemKe(String filter) {
         List<KiemKeDTO> list = new ArrayList<>();
         String sql = "SELECT pk.MaKiemKe, pk.NgayKiem, hh.TenHang, "
