@@ -10,10 +10,11 @@ public class PhieuNhapDTO {
     private int soLuong;
     private double donGia;
     private String maNguoiDuyet;
-
+    private String ghiChu;
+    
     public PhieuNhapDTO() {}
 
-    public PhieuNhapDTO(String maPhieu, Date ngayLap, String tenNCC, String tenHang, int soLuong, double donGia, String maNguoiDuyet) {
+    public PhieuNhapDTO(String maPhieu, Date ngayLap, String tenNCC, String tenHang, int soLuong, double donGia, String maNguoiDuyet, String ghiChu) {
         this.maPhieu = maPhieu;
         this.ngayLap = ngayLap;
         this.tenNCC = tenNCC;
@@ -21,6 +22,7 @@ public class PhieuNhapDTO {
         this.soLuong = soLuong;
         this.donGia = donGia;
         this.maNguoiDuyet = maNguoiDuyet;
+        this.ghiChu = ghiChu;
     }
 
     public String getMaPhieu() { return maPhieu; }
@@ -43,4 +45,6 @@ public class PhieuNhapDTO {
 
     public String getMaNguoiDuyet() { return maNguoiDuyet; }
     public void setMaNguoiDuyet(String maNguoiDuyet) { this.maNguoiDuyet = maNguoiDuyet; }
+    public String getGhiChu() { return ghiChu; }
+    public void setGhiChu(String ghiChu) { this.ghiChu = ghiChu; }
 }

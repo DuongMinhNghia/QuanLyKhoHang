@@ -103,17 +103,17 @@
 
             <%-- 2. NÚT QUẢN LÝ NHẬP/XUẤT/NCC (Chỉ Trưởng kho & Giám đốc) --%>
             <% if(showNhapXuat) { %>
-            <a href="LapPhieuNhapServlet" class="feature-card">
+            <a href="QuanLyDanhSachNhapServlet" class="feature-card">
                 <div class="feature-icon">📥</div>
                 <div class="feature-title">Quản Lý Nhập Kho</div>
                 <div class="feature-desc">Lập và duyệt các phiếu nhập kho.</div>
             </a>
-            <a href="LapPhieuXuatServlet" class="feature-card">
+            <a href="QuanLyDanhSachXuatServlet" class="feature-card">
                 <div class="feature-icon">📤</div>
                 <div class="feature-title">Quản Lý Xuất Kho</div>
                 <div class="feature-desc">Duyệt và xuất kho theo đề nghị.</div>
             </a>
-            <a href="#" class="feature-card">
+            <a href="QuanLyNhaCungCapServlet" class="feature-card">
                 <div class="feature-icon">🏢</div>
                 <div class="feature-title">Nhà Cung Cấp</div>
                 <div class="feature-desc">Quản lý danh sách đối tác cung ứng.</div>

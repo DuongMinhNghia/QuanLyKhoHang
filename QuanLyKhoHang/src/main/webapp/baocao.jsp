@@ -81,10 +81,10 @@
         
         <a href="home.jsp" class="menu-item">Dashboard</a>
         
-       <% if(showMenuNhapXuat) { %>
-            <a href="LapPhieuNhapServlet" class="menu-item">Lập phiếu nhập kho</a>
-            <a href="LapPhieuXuatServlet" class="menu-item">Lập phiếu Xuất kho</a>
-            <a href="#" class="menu-item">Nhà cung cấp</a>
+        <% if(showMenuNhapXuat) { %>
+            <a href="QuanLyDanhSachNhapServlet" class="menu-item">Quản lý Nhập kho</a>
+            <a href="QuanLyDanhSachXuatServlet" class="menu-item">Quản lý Xuất kho</a>
+             <a href="QuanLyNhaCungCapServlet" class="menu-item">Nhà cung cấp</a>
         <% } %>
 
         <% if(showHangHoa) { %>

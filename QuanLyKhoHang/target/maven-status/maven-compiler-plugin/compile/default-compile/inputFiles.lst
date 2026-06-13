@@ -2,6 +2,7 @@ C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\controller\LapPhieuNhapServl
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\model\PhieuXuatDTO.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\model\KiemKeDTO.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\dao\TaiKhoanDAO.java
+C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\controller\QuanLyDanhSachNhapServlet.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\dao\BaoCaoDAO.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\controller\LoadDanhSachKhoServlet.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\controller\LoadDanhSachPhieuXuatServlet.java
@@ -11,12 +12,14 @@ C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\dao\KiemKeDAO.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\model\LichSuDTO.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\dao\PhieuNhapDAO.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\controller\LoginServlet.java
+C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\controller\XuLyDuyetPhieuServlet.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\model\NhaCungCap.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\model\HangHoa.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\controller\BaoCaoServlet.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\controller\LuuPhieuXuatServlet.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\com\mycompany\quanlykhohang\resources\JakartaEE8Resource.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\dao\LichSuDAO.java
+C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\controller\QuanLyNhaCungCapServlet.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\controller\TimKiemHangHoaServlet.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\dao\DBConnect.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\controller\KiemKeServlet.java
@@ -27,6 +30,8 @@ C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\dao\PhieuXuatDAO.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\controller\LoadDanhSachPhieuNhapServlet.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\controller\LuuKiemKeServlet.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\controller\LuuPhieuNhapServlet.java
+C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\controller\QuanLyDanhSachXuatServlet.java
+C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\dao\NhaCungCapDAO.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\model\taikhoan.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\controller\LogoutServlet.java
 C:\cntt\Java\do_an_java\QuanLyKhoHang\src\main\java\model\PhieuNhapKho.java

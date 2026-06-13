@@ -1,8 +1,11 @@
 dao\DBConnect.class
+controller\XuLyDuyetPhieuServlet.class
 dao\BaoCaoDAO.class
 controller\LoadDanhSachPhieuXuatServlet.class
 model\taikhoan.class
 controller\LapPhieuNhapServlet.class
+dao\NhaCungCapDAO.class
+controller\QuanLyDanhSachNhapServlet.class
 dao\KiemKeDAO.class
 dao\TaiKhoanDAO.class
 controller\LuuPhieuNhapServlet.class
@@ -14,12 +17,14 @@ controller\TimKiemHangHoaServlet.class
 controller\LoginServlet.class
 dao\PhieuNhapDAO.class
 model\PhieuXuatDTO.class
+controller\QuanLyDanhSachXuatServlet.class
 com\mycompany\quanlykhohang\resources\JakartaEE8Resource.class
 controller\KiemKeServlet.class
 model\HangHoa.class
 controller\LuuPhieuXuatServlet.class
 model\PhieuNhapDTO.class
 controller\LichSuServlet.class
+controller\QuanLyNhaCungCapServlet.class
 model\NhaCungCap.class
 dao\LichSuDAO.class
 model\LichSuDTO.class

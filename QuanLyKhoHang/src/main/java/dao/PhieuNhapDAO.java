@@ -95,14 +95,12 @@ public class PhieuNhapDAO {
     // ==============================================================================
     public List<model.PhieuNhapDTO> getDanhSachPhieuNhap(String tuKhoa) {
         List<model.PhieuNhapDTO> list = new ArrayList<>();
-        
-        String sql = "SELECT pn.MaPhieu, pn.NgayLap, ncc.TenNCC, hh.TenHang, ct.SoLuong, ct.DonGia, pn.MaNguoiDuyet "
+        String sql = "SELECT pn.MaPhieu, pn.NgayLap, ncc.TenNCC, hh.TenHang, ct.SoLuong, ct.DonGia, pn.MaNguoiDuyet, pn.GhiChu "
                    + "FROM PhieuNhapKho pn "
                    + "JOIN NhaCungCap ncc ON pn.MaNCC = ncc.MaNCC "
                    + "JOIN ChiTietPhieuNhapKho ct ON pn.MaPhieu = ct.MaPhieu "
                    + "JOIN HangHoa hh ON ct.MaHang = hh.MaHang ";
         
-        // Cài đặt điều kiện tìm kiếm (LIKE)
         if (tuKhoa != null && !tuKhoa.trim().isEmpty()) {
             sql += "WHERE hh.TenHang LIKE ? OR pn.MaPhieu LIKE ? ";
         }
@@ -110,7 +108,6 @@ public class PhieuNhapDAO {
         sql += "ORDER BY pn.NgayLap DESC, pn.MaPhieu DESC";
 
         try {
-            // Dùng chung DBConnect
             try (Connection conn = DBConnect.getConnection();
                  PreparedStatement ps = conn.prepareStatement(sql)) {
                 
@@ -128,7 +125,8 @@ public class PhieuNhapDAO {
                             rs.getString("TenHang"),
                             rs.getInt("SoLuong"),
                             rs.getDouble("DonGia"),
-                            rs.getString("MaNguoiDuyet")
+                            rs.getString("MaNguoiDuyet"),
+                            rs.getString("GhiChu") 
                         );
                         list.add(dto);
                     }
@@ -138,5 +136,37 @@ public class PhieuNhapDAO {
             e.printStackTrace();
         }
         return list;
+    }
+    // ==============================================================================
+    // 5. DUYỆT PHIẾU NHẬP
+    // ==============================================================================
+    public void duyetPhieu(String maPhieu, String tenDangNhapNguoiDuyet) {
+        // Cập nhật MaNguoiDuyet bằng MaNV của tài khoản đang đăng nhập
+        String sql = "UPDATE PhieuNhapKho SET MaNguoiDuyet = (SELECT MaNV FROM TaiKhoan WHERE TenDangNhap = ?) WHERE MaPhieu = ?";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, tenDangNhapNguoiDuyet);
+            ps.setString(2, maPhieu);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // ==============================================================================
+    // 6. TỪ CHỐI PHIẾU NHẬP
+    // ==============================================================================
+    public void tuChoiPhieu(String maPhieu, String tenDangNhapNguoiDuyet, String ghiChu) {
+        // Vừa cập nhật người duyệt, vừa ghi đè cột GhiChu bằng lý do từ chối
+        String sql = "UPDATE PhieuNhapKho SET MaNguoiDuyet = (SELECT MaNV FROM TaiKhoan WHERE TenDangNhap = ?), GhiChu = ? WHERE MaPhieu = ?";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, tenDangNhapNguoiDuyet);
+            ps.setString(2, ghiChu);
+            ps.setString(3, maPhieu);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

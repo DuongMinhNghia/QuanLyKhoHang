@@ -90,17 +90,16 @@ public class PhieuXuatDAO {
     // HÀM 2: LẤY DANH SÁCH PHIẾU XUẤT (Dùng cho trang quanlyxuatkho.jsp)
     // Kết nối 3 bảng để lấy đủ thông tin: Mã phiếu, Ngày lập, Tên hàng, Số lượng, ...
     // ==============================================================================
-    public List<PhieuXuatDTO> getDanhSachPhieuXuat(String tuKhoa) {
-        List<PhieuXuatDTO> list = new ArrayList<>();
+   public List<model.PhieuXuatDTO> getDanhSachPhieuXuat(String tuKhoa) {
+        List<model.PhieuXuatDTO> list = new ArrayList<>();
         
-        String sql = "SELECT px.MaPhieu, px.NgayLap, hh.TenHang, ct.SoLuong, ct.DonGia, px.MaNguoiDuyet "
+        String sql = "SELECT px.MaPhieu, px.NgayLap, px.BoPhanNhan, hh.TenHang, ct.SoLuong, ct.DonGia, px.MaNguoiDuyet, px.MucDich "
                    + "FROM PhieuXuatKho px "
                    + "JOIN ChiTietPhieuXuatKho ct ON px.MaPhieu = ct.MaPhieu "
                    + "JOIN HangHoa hh ON ct.MaHang = hh.MaHang ";
         
-        // Cài tính năng tìm kiếm theo Tên sản phẩm
         if (tuKhoa != null && !tuKhoa.trim().isEmpty()) {
-            sql += "WHERE hh.TenHang LIKE ? ";
+            sql += "WHERE hh.TenHang LIKE ? OR px.MaPhieu LIKE ? ";
         }
         
         sql += "ORDER BY px.NgayLap DESC, px.MaPhieu DESC";
@@ -112,17 +111,20 @@ public class PhieuXuatDAO {
                 
                 if (tuKhoa != null && !tuKhoa.trim().isEmpty()) {
                     ps.setString(1, "%" + tuKhoa + "%");
+                    ps.setString(2, "%" + tuKhoa + "%");
                 }
                 
                 try (ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {
-                        PhieuXuatDTO dto = new PhieuXuatDTO(
+                        model.PhieuXuatDTO dto = new model.PhieuXuatDTO(
                             rs.getString("MaPhieu"),
                             rs.getDate("NgayLap"),
+                            rs.getString("BoPhanNhan"),
                             rs.getString("TenHang"),
                             rs.getInt("SoLuong"),
                             rs.getDouble("DonGia"),
-                            rs.getString("MaNguoiDuyet")
+                            rs.getString("MaNguoiDuyet"),
+                            rs.getString("MucDich")     
                         );
                         list.add(dto);
                     }
@@ -132,5 +134,48 @@ public class PhieuXuatDAO {
             e.printStackTrace();
         }
         return list;
+    }
+    
+    // LẤY DANH SÁCH PHIẾU XUẤT CHO TRƯỞNG KHO
+    public List<model.PhieuXuatDTO> getDanhSachPhieuXuat() {
+        List<model.PhieuXuatDTO> list = new ArrayList<>();
+        String sql = "SELECT px.MaPhieu, px.NgayLap, px.BoPhanNhan, hh.TenHang, ct.SoLuong, ct.DonGia, px.MaNguoiDuyet, px.MucDich "
+                   + "FROM PhieuXuatKho px "
+                   + "JOIN ChiTietPhieuXuatKho ct ON px.MaPhieu = ct.MaPhieu "
+                   + "JOIN HangHoa hh ON ct.MaHang = hh.MaHang "
+                   + "ORDER BY px.NgayLap DESC, px.MaPhieu DESC";
+        try (Connection conn = DBConnect.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                list.add(new model.PhieuXuatDTO(
+                    rs.getString("MaPhieu"), rs.getDate("NgayLap"), rs.getString("BoPhanNhan"),
+                    rs.getString("TenHang"), rs.getInt("SoLuong"), rs.getDouble("DonGia"),
+                    rs.getString("MaNguoiDuyet"), rs.getString("MucDich")
+                ));
+            }
+        } catch (Exception e) { e.printStackTrace(); }
+        return list;
+    }
+
+    // DUYỆT PHIẾU XUẤT
+    public void duyetPhieu(String maPhieu, String tenDangNhapNguoiDuyet) {
+        String sql = "UPDATE PhieuXuatKho SET MaNguoiDuyet = (SELECT MaNV FROM TaiKhoan WHERE TenDangNhap = ?) WHERE MaPhieu = ?";
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, tenDangNhapNguoiDuyet);
+            ps.setString(2, maPhieu);
+            ps.executeUpdate();
+        } catch (Exception e) { e.printStackTrace(); }
+    }
+
+    // TỪ CHỐI PHIẾU XUẤT
+    public void tuChoiPhieu(String maPhieu, String tenDangNhapNguoiDuyet, String lyDo) {
+        String sql = "UPDATE PhieuXuatKho SET MaNguoiDuyet = (SELECT MaNV FROM TaiKhoan WHERE TenDangNhap = ?), MucDich = ? WHERE MaPhieu = ?";
+        try (Connection conn = DBConnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, tenDangNhapNguoiDuyet);
+            ps.setString(2, lyDo);
+            ps.setString(3, maPhieu);
+            ps.executeUpdate();
+        } catch (Exception e) { e.printStackTrace(); }
     }
 }
