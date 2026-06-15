@@ -6,11 +6,15 @@
     taikhoan acc = (taikhoan) session.getAttribute("account");
     if(acc == null) { response.sendRedirect("login.jsp"); return; }
     
+     // 2. Lấy role và phân quyền Sidebar
     String role = acc.getVaiTro() != null ? acc.getVaiTro() : "";
+    
+    boolean showTaiKhoan     = role.equalsIgnoreCase("Admin");
     boolean showHangHoa      = role.equalsIgnoreCase("Thủ kho") || role.equalsIgnoreCase("Trưởng kho") || role.equalsIgnoreCase("Giám đốc");
     boolean showMenuNhapXuat = role.equalsIgnoreCase("Trưởng kho") || role.equalsIgnoreCase("Giám đốc");
-    boolean showBaoCao       = role.equalsIgnoreCase("Thủ kho") || role.equalsIgnoreCase("Trưởng kho") || role.equalsIgnoreCase("Giám đốc") || role.equalsIgnoreCase("Admin");
-    boolean showLichSu       = role.equalsIgnoreCase("Thủ kho") || role.equalsIgnoreCase("Trưởng kho") || role.equalsIgnoreCase("Giám đốc") || role.equalsIgnoreCase("Admin");
+    boolean showBaoCao       = role.equalsIgnoreCase("Thủ kho") || role.equalsIgnoreCase("Trưởng kho") || role.equalsIgnoreCase("Giám đốc") || role.equalsIgnoreCase("Admin") || role.equalsIgnoreCase("Kế toán");
+    boolean showLichSu       = role.equalsIgnoreCase("Thủ kho") || role.equalsIgnoreCase("Trưởng kho") || role.equalsIgnoreCase("Giám đốc") || role.equalsIgnoreCase("Admin") || role.equalsIgnoreCase("Kế toán") ;
+    boolean showKeToan       = role.equalsIgnoreCase("Kế toán") || role.equalsIgnoreCase("Giám đốc");
 %>
 <!DOCTYPE html>
 <html>
@@ -21,7 +25,7 @@
         /* CSS CƠ BẢN */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
         body { display: flex; background-color: #f5f6f8; height: 100vh; overflow: hidden; }
-        .sidebar { width: 250px; background-color: #ffffff; border-right: 1px solid #e0e0e0; padding: 20px 0; overflow-y: auto; }
+  .sidebar { width: 250px; min-width: 250px; flex: 0 0 250px; background-color: #ffffff; border-right: 1px solid #e0e0e0; padding: 20px 0; overflow-y: auto; }
         .sidebar-logo { font-size: 20px; font-weight: bold; color: #2c3e50; padding: 0 20px 20px; border-bottom: 1px solid #eee; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;}
         .menu-title { font-size: 11px; color: #888; font-weight: bold; padding: 10px 20px; text-transform: uppercase; }
         .menu-item { padding: 12px 20px; color: #555; text-decoration: none; display: flex; align-items: center; font-weight: 500; font-size: 14px; transition: 0.2s;}
@@ -69,23 +73,32 @@
     <div class="sidebar">
         <div class="sidebar-logo">📦 Minh Phát</div>
         <div class="menu-title">MENU CHÍNH</div>
+        
         <a href="home.jsp" class="menu-item">Dashboard</a>
-            <% if(showMenuNhapXuat) { %>
-            <a href="QuanLyDanhSachNhapServlet" class="menu-item active">Quản lý Nhập kho</a>
+        
+         <% if(showMenuNhapXuat) { %>
+            <a href="QuanLyDanhSachNhapServlet" class="menu-item  active">Quản lý Nhập kho</a>
             <a href="QuanLyDanhSachXuatServlet" class="menu-item">Quản lý Xuất kho</a>
              <a href="QuanLyNhaCungCapServlet" class="menu-item">Nhà cung cấp</a>
         <% } %>
-        
+
         <% if(showHangHoa) { %>
             <a href="LoadDanhSachKhoServlet" class="menu-item">Quản lý hàng hóa</a>
             <a href="KiemKeServlet" class="menu-item">Kiểm kê</a>
         <% } %>
+        
         <% if(showBaoCao) { %>
             <a href="BaoCaoServlet" class="menu-item">Báo cáo</a>
         <% } %>
+        
         <% if(showLichSu) { %>
             <a href="LichSuServlet" class="menu-item">Lịch sử tồn kho</a>
         <% } %>
+          <% if(showKeToan) { %>
+             <a href="CongNoServlet" class="menu-item">Quản lý Công nợ</a>
+               <a href="KiemKeDuyetServlet" class="menu-item">Duyệt Kiểm Kê</a>
+        <% } %>
+       
     </div>
 
     <div class="main-content">

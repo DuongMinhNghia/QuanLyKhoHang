@@ -12,42 +12,34 @@ public class TaiKhoanDAO {
     private static final String DB_USER = "sa"; 
     private static final String DB_PASS = "123"; 
 
-    public taikhoan checkLogin(String tenDangNhap, String matKhau) {
-        taikhoan taikhoan = null;
-        
-        // Câu lệnh SQL JOIN 2 bảng để lấy Họ Tên và Vai Trò
-        String query = "SELECT T.TenDangNhap, T.VaiTro, N.HoTen " +
-                       "FROM TaiKhoan T " +
-                       "JOIN NhanVien N ON T.MaNV = N.MaNV " +
-                       "WHERE T.TenDangNhap = ? AND T.MatKhau = ?";
-
-        try {
-            // Khai báo Driver SQL Server
-            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            
-            // Mở kết nối
-            try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
-                 PreparedStatement ps = conn.prepareStatement(query)) {
+ public taikhoan checkLogin(String username, String password) {
+    // Đảm bảo SQL lấy ra cả cột TrangThai
+    String sql = "SELECT t.TenDangNhap, t.MatKhau, t.VaiTro, t.TrangThai, n.HoTen " +
+                 "FROM TaiKhoan t LEFT JOIN NhanVien n ON t.MaNV = n.MaNV " +
+                 "WHERE t.TenDangNhap = ? AND t.MatKhau = ?";
                  
-                ps.setString(1, tenDangNhap);
-                ps.setString(2, matKhau);
-                
-                // Thực thi câu lệnh
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        String user = rs.getString("TenDangNhap");
-                        String role = rs.getString("VaiTro");
-                        String name = rs.getString("HoTen");
-                        
-                        // Nếu có dữ liệu, tạo đối tượng Account
-                        taikhoan = new taikhoan(user, name, role);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    try (Connection conn = DBConnect.getConnection(); 
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+         
+        ps.setString(1, username);
+        ps.setString(2, password);
         
-        return taikhoan; // Trả về null nếu sai thông tin, trả về account nếu đúng
+        try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                taikhoan acc = new taikhoan();
+                acc.setTenDangNhap(rs.getString("TenDangNhap"));
+                acc.setVaiTro(rs.getString("VaiTro"));
+                acc.setHoTen(rs.getString("HoTen"));
+                // THÊM DÒNG NÀY ĐỂ LẤY TRẠNG THÁI TỪ DB
+                acc.setTrangThai(rs.getString("TrangThai")); 
+                
+                return acc;
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+    return null;
+}
+ 
 }

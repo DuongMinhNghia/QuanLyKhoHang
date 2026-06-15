@@ -22,14 +22,18 @@ public class LichSuServlet extends HttpServlet {
             return; 
         }
 
-        String maHang = request.getParameter("maHang");
+        // Đã sửa: Bắt đúng tên tham số từ URL
+        String maHangLoc = request.getParameter("maHangLoc");
 
         try (Connection conn = DBConnect.getConnection()) {
-            // FIX LỖI Ở ĐÂY: Xóa chữ conn trong ngoặc của getAllHangHoa()
             request.setAttribute("danhSachHH", new HangHoaDAO().getAllHangHoa());
             
-            // Lấy lịch sử biến động
-            request.setAttribute("danhSachLichSu", new LichSuDAO().getLichSuBienDong(conn, maHang));
+            // Lấy lịch sử biến động theo mã hàng đã lọc
+            request.setAttribute("danhSachLichSu", new LichSuDAO().getLichSuBienDong(conn, maHangLoc));
+            
+            // Đẩy lại biến này sang JSP để thẻ select hiển thị đúng mặt hàng đang chọn
+            request.setAttribute("maHangHienTai", maHangLoc);
+            
         } catch (Exception e) {
             e.printStackTrace();
         }

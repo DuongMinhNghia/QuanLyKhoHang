@@ -26,8 +26,7 @@
         /* CSS reset & Font */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
         body { display: flex; background-color: #f5f6f8; height: 100vh; overflow: hidden; }
-        
-        /* SIDEBAR CHUẨN ĐỒNG BỘ */
+
         .sidebar { width: 250px; background-color: #ffffff; border-right: 1px solid #e0e0e0; padding: 20px 0; overflow-y: auto; }
         .sidebar-logo { font-size: 20px; font-weight: bold; color: #2c3e50; padding: 0 20px 20px; border-bottom: 1px solid #eee; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;}
         .menu-title { font-size: 11px; color: #888; font-weight: bold; padding: 10px 20px; text-transform: uppercase; }
@@ -75,7 +74,7 @@
         <div class="sidebar-logo">📦 Minh Phát</div>
         <div class="menu-title">MENU CHÍNH</div>
         
-        <a href="HomeServlet" class="menu-item">📊 Dashboard</a>
+        <a href="HomeServlet" class="menu-item">Dashboard</a>
         
           <% if(showMenuNhapXuat) { %>
             <a href="QuanLyDanhSachNhapServlet" class="menu-item">Quản lý Nhập kho</a>
@@ -175,16 +174,16 @@
                                 <option value="">-- Chọn mặt hàng cần xuất --</option>
                                 <%
                                     List<HangHoa> listHH = (List<HangHoa>) request.getAttribute("danhSachHH");
-                                    if(listHH != null) {
-                                        for(HangHoa hh : listHH) {
-                                %>
-                                <option value="<%= hh.getMaHH() %>" data-name="<%= hh.getTenHH() %>">
-                                    <%= hh.getMaHH() %> - <%= hh.getTenHH() %> (Tồn: <%= hh.getSoLuongTon() %>)
-                                </option>
-                                <% 
-                                        }
-                                    } 
-                                %>
+                                   if(listHH != null) {
+                                     for(HangHoa hh : listHH) {
+                             %>
+                                 <option value="<%= hh.getMaHang() %>" data-name="<%= hh.getTenHang() %>">
+                                     <%= hh.getMaHang() %> - <%= hh.getTenHang() %> (Tồn: <%= hh.getSoLuongTonKho() %>)
+                                 </option>
+                             <%
+                                     }
+                                 }
+                             %>
                             </select>
                         </div>
                         <div class="form-group">

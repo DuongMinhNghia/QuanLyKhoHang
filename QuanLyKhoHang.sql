@@ -512,14 +512,23 @@ VALUES (N'Unilever Việt Nam', N'Quận 7, TP.HCM', '02838123456', 'contact@uni
 -- 5. Dữ liệu Nhân Viên (Có liên kết Bộ Phận)
 
 INSERT INTO NhanVien (MaNV, HoTen, SDT, DiaChi, NgaySinh, MaBoPhan) VALUES 
+-- Thủ kho
 ('NV01', N'Nguyễn Văn Thủ', '0901234567', N'Bình Thạnh, TP.HCM', '1990-05-15', 'BP01'), -- Thủ kho
 ('NV02', N'Trần Thị Trưởng', '0901234568', N'Gò Vấp, TP.HCM', '1985-08-20', 'BP01'),   -- Trưởng kho
 ('NV03', N'Lê Mua Hàng', '0901234569', N'Quận 2, TP.HCM', '1992-10-10', 'BP02'),     -- Nhân viên mua hàng
 ('NV04', N'Phạm Kinh Doanh', '0901234570', N'Quận 3, TP.HCM', '1995-01-01', 'BP03'),-- Nhân viên kinh doanh
-('NV05', N'AdMin', '0901234570', N'Quận 3, TP.HCM', '1995-01-01', 'BP03');
+('NV05', N'AdMin', '0901234570', N'Quận 3, TP.HCM', '1995-01-01', 'BP03'),
+('NV06', N'Trấn Văn Tùng', '0901234567', N'Bình Thạnh, TP.HCM', '1990-05-15', 'BP01'), 
+('NV07', N'Trấn Văn Bê', '0901234567', N'Bình Thạnh, TP.HCM', '1990-05-15', 'BP01'),
+('NV08', N'Trấn Lê Anh Tú', '0901234567', N'Bình Thạnh, TP.HCM', '1990-05-15', 'BP02'),
+('NV09', N'Trấn Văn Tình', '0901234567', N'Bình Thạnh, TP.HCM', '1990-05-15', 'BP03');
+
 
 -- 6. Dữ liệu Tài Khoản
 INSERT INTO TaiKhoan (TenDangNhap, MatKhau, VaiTro, TrangThai, MaNV) VALUES 
+('ketoan1', '123456', N'Kế toán', N'Hoạt động', 'NV06'),
+('ketoan2', '123456', N'Kế toán', N'Hoạt động', 'NV07'),
+('thukho2', '123456', N'Thủ kho', N'Hoạt động', 'NV08'),
 ('admin', '123456', N'Admin', N'Hoạt động', 'NV05'),
 ('giamdoc', '123456', N'Giám đốc', N'Hoạt động', 'NV04'),
 ('thukho1', '123456', N'Thủ kho', N'Hoạt động', 'NV01'),
@@ -586,3 +595,87 @@ SELECT T.TenDangNhap, T.VaiTro, N.HoTen
                        FROM TaiKhoan T  
                        JOIN NhanVien N ON T.MaNV = N.MaNV  
                        WHERE T.TenDangNhap = 'thukho1' AND T.MatKhau = '123456'
+
+use QuanLyKhoHang
+CREATE TABLE CongNo (
+    MaCongNo VARCHAR(20) PRIMARY KEY, -- Ví dụ: CN_PN001
+    MaPhieu VARCHAR(20),             -- Liên kết với MaPhieu
+    LoaiPhieu NVARCHAR(20),          -- 'NHAP' hoặc 'XUAT'
+    SoTienPhaiTra DECIMAL(18,2),      -- Tổng tiền
+    SoTienDaTra DECIMAL(18,2) DEFAULT 0,
+    TrangThai NVARCHAR(50) DEFAULT N'Chưa thanh toán'
+);
+GO
+
+-- Chuyển phiếu Nhập cũ (Dùng LEFT JOIN + WHERE IS NULL để chỉ lấy những cái CHƯA CÓ trong bảng Công nợ)
+INSERT INTO CongNo (MaCongNo, MaPhieu, LoaiPhieu, SoTienPhaiTra)
+SELECT 'CN_' + p.MaPhieu, p.MaPhieu, N'Nhập', SUM(c.SoLuong * c.DonGia)
+FROM PhieuNhapKho p
+JOIN ChiTietPhieuNhapKho c ON p.MaPhieu = c.MaPhieu
+WHERE p.MaNguoiDuyet IS NOT NULL 
+AND NOT EXISTS (SELECT 1 FROM CongNo WHERE MaCongNo = 'CN_' + p.MaPhieu)
+GROUP BY p.MaPhieu;
+
+-- Chuyển phiếu Xuất cũ
+INSERT INTO CongNo (MaCongNo, MaPhieu, LoaiPhieu, SoTienPhaiTra)
+SELECT 'CN_' + p.MaPhieu, p.MaPhieu, N'Xuất', SUM(c.SoLuong * c.DonGia)
+FROM PhieuXuatKho p
+JOIN ChiTietPhieuXuatKho c ON p.MaPhieu = c.MaPhieu
+WHERE p.MaNguoiDuyet IS NOT NULL
+AND NOT EXISTS (SELECT 1 FROM CongNo WHERE MaCongNo = 'CN_' + p.MaPhieu)
+GROUP BY p.MaPhieu;
+GO
+-- Ví dụ: Ghi nhận trả tiền cho một phiếu nhập
+UPDATE CongNo 
+SET SoTienDaTra = SoTienPhaiTra, TrangThai = N'Hoàn tất' 
+WHERE MaPhieu = 'PN001';
+GO
+
+
+ALTER PROCEDURE SP_DuyetPhieuNhapKho
+    @MaPhieu VARCHAR(20),
+    @MaTruongKho VARCHAR(20)
+AS
+BEGIN
+    -- 1. Cập nhật trạng thái người duyệt
+    UPDATE PhieuNhapKho
+    SET MaNguoiDuyet = @MaTruongKho
+    WHERE MaPhieu = @MaPhieu;
+
+    -- 2. TỰ ĐỘNG THÊM VÀO BẢNG CÔNG NỢ
+    -- Kiểm tra xem đã tồn tại chưa để tránh lỗi trùng khóa chính (nếu duyệt lại)
+    IF NOT EXISTS (SELECT 1 FROM CongNo WHERE MaPhieu = @MaPhieu)
+    BEGIN
+        INSERT INTO CongNo (MaCongNo, MaPhieu, LoaiPhieu, SoTienPhaiTra)
+        SELECT 'CN_' + @MaPhieu, @MaPhieu, N'Nhập', SUM(SoLuong * DonGia)
+        FROM ChiTietPhieuNhapKho WHERE MaPhieu = @MaPhieu
+        GROUP BY MaPhieu;
+    END
+END;
+GO	
+
+ALTER PROCEDURE SP_DuyetPhieuXuatKho
+    @MaPhieu VARCHAR(20),
+    @MaTruongKho VARCHAR(20)
+AS
+BEGIN
+    -- 1. Cập nhật người duyệt
+    UPDATE PhieuXuatKho
+    SET MaNguoiDuyet = @MaTruongKho
+    WHERE MaPhieu = @MaPhieu;
+    
+    -- 2. Cập nhật trạng thái phiếu đề nghị
+    UPDATE PhieuDeNghiXuat
+    SET TrangThai = N'Đã hoàn tất'
+    WHERE MaDeNghi = (SELECT MaDeNghi FROM PhieuXuatKho WHERE MaPhieu = @MaPhieu);
+
+    -- 3. TỰ ĐỘNG THÊM VÀO BẢNG CÔNG NỢ
+    IF NOT EXISTS (SELECT 1 FROM CongNo WHERE MaPhieu = @MaPhieu)
+    BEGIN
+        INSERT INTO CongNo (MaCongNo, MaPhieu, LoaiPhieu, SoTienPhaiTra)
+        SELECT 'CN_' + @MaPhieu, @MaPhieu, N'Xuất', SUM(SoLuong * DonGia)
+        FROM ChiTietPhieuXuatKho WHERE MaPhieu = @MaPhieu
+        GROUP BY MaPhieu;
+    END
+END;
+GO

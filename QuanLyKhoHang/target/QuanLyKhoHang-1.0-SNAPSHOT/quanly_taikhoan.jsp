@@ -7,8 +7,8 @@
     taikhoan acc = (taikhoan) session.getAttribute("account");
     if(acc == null || !acc.getVaiTro().equalsIgnoreCase("Admin")) { response.sendRedirect("login.jsp"); return; }
     
- String role = acc.getVaiTro() != null ? acc.getVaiTro() : "";
-  boolean showTaiKhoan     = role.equalsIgnoreCase("Admin");
+    String role = acc.getVaiTro() != null ? acc.getVaiTro() : "";
+    boolean showTaiKhoan     = role.equalsIgnoreCase("Admin");
     boolean showHangHoa      = role.equalsIgnoreCase("Thủ kho") || role.equalsIgnoreCase("Trưởng kho") || role.equalsIgnoreCase("Giám đốc");
     boolean showMenuNhapXuat = role.equalsIgnoreCase("Trưởng kho") || role.equalsIgnoreCase("Giám đốc");
     boolean showBaoCao       = role.equalsIgnoreCase("Thủ kho") || role.equalsIgnoreCase("Trưởng kho") || role.equalsIgnoreCase("Giám đốc") || role.equalsIgnoreCase("Admin");
@@ -23,7 +23,7 @@
         /* CSS GIAO DIỆN CHUNG NHƯ CŨ */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
         body { display: flex; background-color: #f5f6f8; height: 100vh; overflow: hidden; }
-        .sidebar { width: 250px; background-color: #ffffff; border-right: 1px solid #e0e0e0; padding: 20px 0; overflow-y: auto; }
+       .sidebar { width: 250px; min-width: 250px; flex: 0 0 250px; background-color: #ffffff; border-right: 1px solid #e0e0e0; padding: 20px 0; overflow-y: auto; }
         .sidebar-logo { font-size: 20px; font-weight: bold; color: #2c3e50; padding: 0 20px 20px; border-bottom: 1px solid #eee; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;}
         .menu-title { font-size: 11px; color: #888; font-weight: bold; padding: 10px 20px; text-transform: uppercase; }
         .menu-item { padding: 12px 20px; color: #555; text-decoration: none; display: flex; align-items: center; font-weight: 500; font-size: 14px; transition: 0.2s;}
@@ -86,8 +86,10 @@
         <% if(showLichSu) { %>
             <a href="LichSuServlet" class="menu-item">Lịch sử tồn kho</a>
         <% } %>
-     <% if(showTaiKhoan) { %>
-         <div class="menu-title">HỆ THỐNG</div>
+        
+        <%-- ĐÃ SỬA LỖI ĐÓNG NGOẶC TẠI ĐÂY VÀ THÊM MENU HỆ THỐNG --%>
+        <% if(showTaiKhoan) { %>
+            <div class="menu-title">HỆ THỐNG</div>
             <a href="QuanLyTaiKhoanServlet" class="menu-item active">Quản lý tài khoản</a>
         <% } %>
     </div>
@@ -95,7 +97,9 @@
     <div class="main-content">
         <div class="topbar">
             <div style="font-weight:bold;">Hệ thống Quản lý Kho</div>
-            <div style="font-size: 13px;"><b><%= acc.getHoTen() %></b> | <%= acc.getVaiTro() %></div>
+            <div style="font-size: 13px;"><b><%= acc.getHoTen() %></b> | <%= acc.getVaiTro() %> 
+                <a href="LogoutServlet" style="color: #e74c3c; text-decoration: none; margin-left:10px;">[Đăng xuất]</a>
+            </div>
         </div>
 
         <div class="content-body">

@@ -31,7 +31,7 @@
         body { display: flex; background-color: #f5f6f8; height: 100vh; overflow: hidden; }
         
         /* SIDEBAR */
-        .sidebar { width: 250px; background-color: #ffffff; border-right: 1px solid #e0e0e0; padding: 20px 0; }
+        .sidebar { width: 250px; min-width: 250px; flex: 0 0 250px; background-color: #ffffff; border-right: 1px solid #e0e0e0; padding: 20px 0; overflow-y: auto; }
         .sidebar-logo { font-size: 20px; font-weight: bold; color: #333; padding: 0 20px 20px; border-bottom: 1px solid #eee; margin-bottom: 10px; }
         .menu-title { font-size: 12px; color: #888; font-weight: bold; padding: 10px 20px; text-transform: uppercase; }
         .menu-item { padding: 12px 20px; color: #555; text-decoration: none; display: block; font-weight: 500; }
@@ -182,16 +182,16 @@
                                 <%
                                     // Vòng lặp lấy danh sách Hàng Hóa từ Database
                                     List<HangHoa> listHH = (List<HangHoa>) request.getAttribute("danhSachHH");
-                                    if(listHH != null) {
-                                        for(HangHoa hh : listHH) {
-                                %>
-                                <option value="<%= hh.getMaHH() %>" data-name="<%= hh.getTenHH() %>">
-                                    <%= hh.getMaHH() %> - <%= hh.getTenHH() %> (Tồn: <%= hh.getSoLuongTon() %>)
-                                </option>
-                                <% 
-                                        }
-                                    } 
-                                %>
+                                 if(listHH != null) {
+                                     for(HangHoa hh : listHH) {
+                             %>
+                                 <option value="<%= hh.getMaHang() %>" data-name="<%= hh.getTenHang() %>">
+                                     <%= hh.getMaHang() %> - <%= hh.getTenHang() %> (Tồn: <%= hh.getSoLuongTonKho() %>)
+                                 </option>
+                             <%
+                                     }
+                                 }
+                             %>
                             </select>
                         </div>
                         <div class="form-group">

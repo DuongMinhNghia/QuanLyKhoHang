@@ -106,31 +106,56 @@ public class BaoCaoDAO {
 
     // 3. Lọc Báo Cáo KIỂM KÊ
     public List<KiemKeDTO> getBaoCaoKiemKe(String filter) {
-        List<KiemKeDTO> list = new ArrayList<>();
-        String sql = "SELECT pk.MaKiemKe, pk.NgayKiem, hh.TenHang, "
-                   + "(ct.SoLuongThucTe - ct.ChenhLech) AS LyThuyet, "
-                   + "ct.SoLuongThucTe, ct.ChenhLech, ct.NguyenNhan "
-                   + "FROM PhieuKiemKeHangHoa pk "
-                   + "JOIN ChiTietPhieuKiemKe ct ON pk.MaKiemKe = ct.MaKiemKe "
-                   + "JOIN HangHoa hh ON ct.MaHang = hh.MaHang WHERE 1=1 ";
-        
-        // Lọc theo yêu cầu của bạn: Khớp (bình thường) hoặc Lệch (có chỉnh sửa)
-        if ("lech".equals(filter)) sql += "AND ct.ChenhLech <> 0 ";
-        else if ("khop".equals(filter)) sql += "AND ct.ChenhLech = 0 ";
-        
-        sql += "ORDER BY pk.NgayKiem DESC";
+    List<KiemKeDTO> list = new ArrayList<>();
+    
+    // 1. Dùng LEFT JOIN và ISNULL để không bỏ sót phiếu nào (kể cả phiếu chưa có hàng hóa)
+    String sql = "SELECT pk.MaKiemKe, pk.NgayKiem, "
+               + "ISNULL(hh.TenHang, N'(Chưa thêm hàng)') AS TenHang, "
+               + "ISNULL((ct.SoLuongThucTe - ct.ChenhLech), 0) AS LyThuyet, "
+               + "ISNULL(ct.SoLuongThucTe, 0) AS SoLuongThucTe, "
+               + "ISNULL(ct.ChenhLech, 0) AS ChenhLech, "
+               + "ISNULL(ct.NguyenNhan, N'') AS NguyenNhan, "
+               + "ISNULL(pk.TrangThai, N'Chờ duyệt') AS TrangThai " 
+               + "FROM PhieuKiemKeHangHoa pk "
+               + "LEFT JOIN ChiTietPhieuKiemKe ct ON pk.MaKiemKe = ct.MaKiemKe "
+               + "LEFT JOIN HangHoa hh ON ct.MaHang = hh.MaHang "
+               + "WHERE 1=1 ";
+    
+    // 2. Logic lọc dữ liệu
+    if ("daduyet".equals(filter)) {
+        sql += "AND pk.TrangThai = N'Đã duyệt' ";
+    } else if ("tuchoi".equals(filter)) {
+        sql += "AND pk.TrangThai = N'Từ chối' ";
+    } else if ("choduyet".equals(filter)) {
+        // Xử lý luôn trường hợp phiếu mới tạo trạng thái trong DB đang là NULL
+        sql += "AND (pk.TrangThai = N'Chờ duyệt' OR pk.TrangThai IS NULL) ";
+    } 
+    
+    sql += "ORDER BY pk.NgayKiem DESC";
 
-        try {
-            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
-                 PreparedStatement ps = conn.prepareStatement(sql);
-                 ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    list.add(new KiemKeDTO(rs.getString("MaKiemKe"), rs.getDate("NgayKiem"), rs.getString("TenHang"), 
-                                           rs.getInt("LyThuyet"), rs.getInt("SoLuongThucTe"), rs.getInt("ChenhLech"), rs.getString("NguyenNhan")));
-                }
+    try {
+        // Dùng đúng cấu trúc kết nối bạn đang dùng
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASS);
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            
+            while (rs.next()) {
+                // 3. Khởi tạo đối tượng
+                list.add(new KiemKeDTO(
+                    rs.getString("MaKiemKe"), 
+                    rs.getDate("NgayKiem"), 
+                    rs.getString("TenHang"), 
+                    rs.getInt("LyThuyet"), 
+                    rs.getInt("SoLuongThucTe"), 
+                    rs.getInt("ChenhLech"), 
+                    rs.getString("NguyenNhan"),
+                    rs.getString("TrangThai")
+                ));
             }
-        } catch (Exception e) { e.printStackTrace(); }
-        return list;
+        }
+    } catch (Exception e) { 
+        e.printStackTrace(); 
     }
+    return list;
+}
 }

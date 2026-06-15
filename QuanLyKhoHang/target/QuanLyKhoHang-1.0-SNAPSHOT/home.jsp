@@ -5,14 +5,15 @@
     taikhoan acc = (taikhoan) session.getAttribute("account");
     if(acc == null) { response.sendRedirect("login.jsp"); return; }
     
-    // 2. SETUP LOGIC PHÂN QUYỀN (ROLE-BASED ACCESS CONTROL)
+    // 2. SETUP LOGIC PHÂN QUYỀN
     String role = acc.getVaiTro() != null ? acc.getVaiTro() : "";
     
-    // Đặt cờ (true/false) cho từng nhóm chức năng tùy theo Vai trò
     boolean showHangHoa    = role.equalsIgnoreCase("Thủ kho") || role.equalsIgnoreCase("Trưởng kho") || role.equalsIgnoreCase("Giám đốc");
     boolean showNhapXuat   = role.equalsIgnoreCase("Trưởng kho") || role.equalsIgnoreCase("Giám đốc");
-    boolean showBaoCao     = role.equalsIgnoreCase("Thủ kho") || role.equalsIgnoreCase("Trưởng kho") || role.equalsIgnoreCase("Giám đốc") || role.equalsIgnoreCase("Admin");
+    boolean showBaoCao     = role.equalsIgnoreCase("Thủ kho") || role.equalsIgnoreCase("Trưởng kho") || role.equalsIgnoreCase("Giám đốc") || role.equalsIgnoreCase("Admin") || role.equalsIgnoreCase("Kế toán");
+    boolean showCongNo     = role.equalsIgnoreCase("Kế toán") || role.equalsIgnoreCase("Giám đốc") || role.equalsIgnoreCase("Admin"); // MỚI
     boolean showTaiKhoan   = role.equalsIgnoreCase("Admin");
+    boolean showDuyetKiemKe = role.equalsIgnoreCase("Kế toán") || role.equalsIgnoreCase("Giám đốc");
 %>
 <!DOCTYPE html>
 <html>
@@ -90,59 +91,68 @@
             Khu Vực Làm Việc (<%= role %>)
         </h2>
 
-        <div class="feature-grid">
+       <div class="feature-grid">
             
-            <%-- 1. NÚT QUẢN LÝ HÀNG HÓA --%>
+            <%-- 1. QUẢN LÝ HÀNG HÓA --%>
             <% if(showHangHoa) { %>
             <a href="LoadDanhSachKhoServlet" class="feature-card">
                 <div class="feature-icon">🗄️</div>
                 <div class="feature-title">Quản Lý Hàng Hóa</div>
-                <div class="feature-desc">Tra cứu tồn kho, lập phiếu kiểm kê.</div>
             </a>
             <% } %>
 
-            <%-- 2. NÚT QUẢN LÝ NHẬP/XUẤT/NCC (Chỉ Trưởng kho & Giám đốc) --%>
+            <%-- 2. NHẬP/XUẤT (Trưởng kho & Giám đốc) --%>
             <% if(showNhapXuat) { %>
             <a href="QuanLyDanhSachNhapServlet" class="feature-card">
                 <div class="feature-icon">📥</div>
                 <div class="feature-title">Quản Lý Nhập Kho</div>
-                <div class="feature-desc">Lập và duyệt các phiếu nhập kho.</div>
             </a>
             <a href="QuanLyDanhSachXuatServlet" class="feature-card">
                 <div class="feature-icon">📤</div>
                 <div class="feature-title">Quản Lý Xuất Kho</div>
-                <div class="feature-desc">Duyệt và xuất kho theo đề nghị.</div>
             </a>
-            <a href="QuanLyNhaCungCapServlet" class="feature-card">
-                <div class="feature-icon">🏢</div>
-                <div class="feature-title">Nhà Cung Cấp</div>
-                <div class="feature-desc">Quản lý danh sách đối tác cung ứng.</div>
+             <a href="QuanLyNhaCungCapServlet" class="feature-card">
+                <div class="feature-icon">📤</div>
+                <div class="feature-title">Quản Lý Nhà Cung Cấp</div>
             </a>
             <% } %>
 
-            <%-- 3. NÚT BÁO CÁO & LỊCH SỬ (Ai cũng xem được, trừ một số quyền đặc thù nếu có) --%>
+            <%-- 3. BÁO CÁO & LỊCH SỬ (Cho phép Kế toán xem) --%>
             <% if(showBaoCao) { %>
             <a href="BaoCaoServlet" class="feature-card">
                 <div class="feature-icon">📊</div>
                 <div class="feature-title">Báo Cáo Tổng Hợp</div>
-                <div class="feature-desc">Xem báo cáo Nhập - Xuất - Kiểm kê.</div>
             </a>
             <a href="LichSuServlet" class="feature-card">
                 <div class="feature-icon">🕒</div>
                 <div class="feature-title">Lịch Sử Tồn Kho</div>
-                <div class="feature-desc">Truy xuất vết biến động kho hàng.</div>
             </a>
             <% } %>
 
-            <%-- 4. NÚT QUẢN LÝ TÀI KHOẢN (Chỉ dành cho Admin) --%>
+            <%-- 4. CHỨC NĂNG KẾ TOÁN  --%>
+            <% if(showCongNo) { %>
+            <a href="CongNoServlet" class="feature-card" style="border-color: #27ae60;">
+                <div class="feature-icon">💰</div>
+                <div class="feature-title" style="color: #27ae60;">Quản Lý Công Nợ</div>
+                <div class="feature-desc">Theo dõi công nợ Nhập - Xuất.</div>
+            </a>
+            <% } %>
+            <%-- CHỨC NĂNG DUYỆT KIỂM KÊ (Cho Kế toán) --%>
+            <% if(showDuyetKiemKe) { %>
+            <a href="LoadKiemKeDuyetServlet" class="feature-card" style="border-color: #e67e22;">
+                <div class="feature-icon">✅</div>
+                <div class="feature-title" style="color: #e67e22;">Duyệt Kiểm Kê</div>
+                <div class="feature-desc">Phê duyệt chênh lệch kho.</div>
+            </a>
+            <% } %>
+
+            <%-- 5. QUẢN LÝ TÀI KHOẢN --%>
             <% if(showTaiKhoan) { %>
             <a href="QuanLyTaiKhoanServlet" class="feature-card">
                 <div class="feature-icon">👥</div>
                 <div class="feature-title">Quản Lý Tài Khoản</div>
-                <div class="feature-desc">Cấp phát quyền và quản lý nhân sự.</div>
             </a>
             <% } %>
-
         </div>
     </div>
 </body>

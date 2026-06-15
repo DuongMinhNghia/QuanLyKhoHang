@@ -8,18 +8,15 @@
     taikhoan acc = (taikhoan) session.getAttribute("account");
     if(acc == null) { response.sendRedirect("login.jsp"); return; }
     
-    // 2. LOGIC PHÂN QUYỀN
+     // 2. Lấy role và phân quyền Sidebar
     String role = acc.getVaiTro() != null ? acc.getVaiTro() : "";
-  
-    boolean showHangHoa      = role.equalsIgnoreCase("Thủ kho") || role.equalsIgnoreCase("Trưởng kho") || role.equalsIgnoreCase("Giám đốc");
-    // 1. Chỉ hiện Menu Nhập/Xuất bên trái cho Trưởng kho & Giám đốc
-    boolean showMenuNhapXuat = role.equalsIgnoreCase("Trưởng kho") || role.equalsIgnoreCase("Giám đốc");
-    // 2. Cho phép Thủ kho, Trưởng kho, Giám đốc thấy Nút bấm lập phiếu
-    boolean showBtnLapPhieu  = role.equalsIgnoreCase("Thủ kho") || role.equalsIgnoreCase("Trưởng kho") || role.equalsIgnoreCase("Giám đốc");
     
-    boolean showBaoCao       = role.equalsIgnoreCase("Thủ kho") || role.equalsIgnoreCase("Trưởng kho") || role.equalsIgnoreCase("Giám đốc") || role.equalsIgnoreCase("Admin");
-    boolean showLichSu       = role.equalsIgnoreCase("Thủ kho") || role.equalsIgnoreCase("Trưởng kho") || role.equalsIgnoreCase("Giám đốc") || role.equalsIgnoreCase("Admin");
     boolean showTaiKhoan     = role.equalsIgnoreCase("Admin");
+    boolean showHangHoa      = role.equalsIgnoreCase("Thủ kho") || role.equalsIgnoreCase("Trưởng kho") || role.equalsIgnoreCase("Giám đốc");
+    boolean showMenuNhapXuat = role.equalsIgnoreCase("Trưởng kho") || role.equalsIgnoreCase("Giám đốc");
+    boolean showBaoCao       = role.equalsIgnoreCase("Thủ kho") || role.equalsIgnoreCase("Trưởng kho") || role.equalsIgnoreCase("Giám đốc") || role.equalsIgnoreCase("Admin") || role.equalsIgnoreCase("Kế toán");
+    boolean showLichSu       = role.equalsIgnoreCase("Thủ kho") || role.equalsIgnoreCase("Trưởng kho") || role.equalsIgnoreCase("Giám đốc") || role.equalsIgnoreCase("Admin") || role.equalsIgnoreCase("Kế toán") ;
+    boolean showKeToan       = role.equalsIgnoreCase("Kế toán") || role.equalsIgnoreCase("Giám đốc");
 %>
 <!DOCTYPE html>
 <html>
@@ -80,7 +77,7 @@
         <% } %>
 
         <% if(showHangHoa) { %>
-            <a href="LoadDanhSachKhoServlet" class="menu-item ">Quản lý hàng hóa</a>
+            <a href="LoadDanhSachKhoServlet" class="menu-item">Quản lý hàng hóa</a>
             <a href="KiemKeServlet" class="menu-item">Kiểm kê</a>
         <% } %>
         
@@ -90,6 +87,10 @@
         
         <% if(showLichSu) { %>
             <a href="LichSuServlet" class="menu-item active">Lịch sử tồn kho</a>
+        <% } %>
+          <% if(showKeToan) { %>
+             <a href="CongNoServlet" class="menu-item">Quản lý Công nợ</a>
+               <a href="KiemKeDuyetServlet" class="menu-item">Duyệt Kiểm Kê</a>
         <% } %>
 
      <% if(showTaiKhoan) { %>
@@ -122,7 +123,7 @@
                         List<HangHoa> listHH = (List<HangHoa>) request.getAttribute("danhSachHH");
                         if(listHH != null) {
                             for(HangHoa hh : listHH) {
-                                String sel = (maHangLoc != null && maHangLoc.equals(hh.getMaHang())) ? "selected" : "";
+                               String sel = (maHangLoc != null && maHangLoc.equals(hh.getMaHang())) ? "selected" : "";
                     %>
                     <option value="<%= hh.getMaHang() %>" <%= sel %>><%= hh.getMaHang() %> - <%= hh.getTenHang() %></option>
                     <%      }

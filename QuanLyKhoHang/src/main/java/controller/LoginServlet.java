@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 @WebServlet("/LoginServlet")
 public class LoginServlet extends HttpServlet {
 
-    @Override
+   @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
@@ -25,18 +25,27 @@ public class LoginServlet extends HttpServlet {
         String user = request.getParameter("username");
         String pass = request.getParameter("password");
         
-        // 2. Gọi DAO để kiểm tra với Database
-       TaiKhoanDAO tkDao = new TaiKhoanDAO();
-        taikhoan loggedInUser = tkDao.checkLogin(user, pass);
+        // 2. Gọi DAO để kiểm tra với Database 
+        TaiKhoanDAO tkDao = new TaiKhoanDAO();
+        taikhoan acc = tkDao.checkLogin(user, pass); // Lưu kết quả vào biến 'acc'
         
         // 3. Xử lý kết quả
-        if (loggedInUser != null) {
-            // Đúng: Tạo Session lưu thông tin người dùng
+        if (acc != null) {
+            
+            if ("Bị khóa".equalsIgnoreCase(acc.getTrangThai())) {
+                request.setAttribute("errorMessage", "Tài khoản tạm thời bị khóa! Vui lòng liên hệ admin"); 
+                request.getRequestDispatcher("login.jsp").forward(request, response);
+                return; // Ngắt luôn, không cho chạy tiếp
+            }
+            // -----------------------------------------------
+
+            // Đúng và không bị khóa: Tạo Session lưu thông tin người dùng
             HttpSession session = request.getSession();
-            session.setAttribute("account", loggedInUser);
+            session.setAttribute("account", acc);
             
             // Chuyển hướng sang trang chủ
             response.sendRedirect("home.jsp");
+            
         } else {
             // Sai: Tạo thông báo lỗi và quay lại trang đăng nhập
             request.setAttribute("errorMessage", "Tên đăng nhập hoặc mật khẩu không chính xác!");

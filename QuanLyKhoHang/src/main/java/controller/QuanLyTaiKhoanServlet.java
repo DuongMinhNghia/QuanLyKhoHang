@@ -27,7 +27,7 @@ public class QuanLyTaiKhoanServlet extends HttpServlet {
 
         // Xử lý Xóa
         if ("delete".equals(action)) {
-            dao.xoaTaiKhoan(request.getParameter("id")); // SỬA THÀNH CHỮ 'x' VIẾT THƯỜNG ĐỂ FIX LỖI SỐ 2
+            dao.xoaTaiKhoan(request.getParameter("id"));
             response.sendRedirect("QuanLyTaiKhoanServlet?success=1");
             return;
         }

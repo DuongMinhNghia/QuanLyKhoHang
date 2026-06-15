@@ -9,6 +9,8 @@
     
     String role = acc.getVaiTro() != null ? acc.getVaiTro() : "";
     boolean showMenuNhapXuat = role.equalsIgnoreCase("Trưởng kho") || role.equalsIgnoreCase("Giám đốc");
+    boolean isManager = role.equalsIgnoreCase("Trưởng kho") || role.equalsIgnoreCase("Giám đốc");
+    boolean showKeToan = role.equalsIgnoreCase("Giám đốc");
 %>
 <!DOCTYPE html>
 <html>
@@ -19,7 +21,6 @@
         /* CSS GIAO DIỆN CHUNG (Giống hình bạn gửi) */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
         body { display: flex; background-color: #f5f6f8; height: 100vh; overflow: hidden; }
-        
         .sidebar { width: 250px; min-width: 250px; flex: 0 0 250px; background-color: #ffffff; border-right: 1px solid #e0e0e0; padding: 20px 0; overflow-y: auto; }
         .sidebar-logo { font-size: 20px; font-weight: bold; color: #333; padding: 0 20px 20px; border-bottom: 1px solid #eee; margin-bottom: 10px; display: flex; align-items: center; gap: 10px;}
         .menu-title { font-size: 11px; color: #888; font-weight: bold; padding: 10px 20px; text-transform: uppercase; }
@@ -83,6 +84,10 @@
         <a href="KiemKeServlet" class="menu-item">Kiểm kê</a>
         <a href="BaoCaoServlet" class="menu-item">Báo cáo</a>
         <a href="LichSuServlet" class="menu-item">Lịch sử tồn kho</a>
+         <% if(showKeToan) { %>
+             <a href="CongNoServlet" class="menu-item">Quản lý Công nợ</a>
+              <a href="KiemKeDuyetServlet" class="menu-item">Duyệt Kiểm Kê</a>
+        <% } %>
     </div>
 
     <div class="main-content">
@@ -107,11 +112,12 @@
                     <div class="search-group">
                         <input type="text" id="searchInput" class="search-input" onkeyup="timKiemLIVE()" placeholder="Nhập tên hoặc mã hàng hóa...">
                         <button class="btn btn-search">🔍 Tìm kiếm</button>
-                        <a href="QuanLyHangHoaServlet" class="btn btn-reload">🔄 Tải lại</a>
+                        <a href="LoadDanhSachKhoServlet" class="btn btn-reload">🔄 Tải lại</a>
                     </div>
                     <div style="display: flex; gap: 10px;">
+                        <% if (isManager) { %>
                         <button class="btn btn-add-product" onclick="moModalThem()">+ Thêm Sản Phẩm</button>
-                        
+                        <% } %>
                         <a href="lapphieunhap.jsp" class="btn btn-import">+ Lập Phiếu Nhập</a>
                         <a href="lapphieuxuat.jsp" class="btn btn-export">- Lập Phiếu Xuất</a>
                     </div>
@@ -144,8 +150,10 @@
                             <td class="<%= qtyClass %>"><%= hh.getSoLuongTonKho() %></td>
                             <td><%= hh.getDvt() %></td>
                             <td>
+                                <% if (isManager) { %>
                                 <button class="btn btn-edit" onclick="moModalSua('<%= hh.getMaHang() %>', '<%= hh.getTenHang() %>', '<%= hh.getDvt() %>', '<%= hh.getSoLuongTonKho() %>', '<%= hh.getQuyCach() %>', '<%= hh.getHanMucTonToiThieu() %>', '<%= hh.getMaLoai() %>', '<%= hh.getMaViTri() %>')">Sửa</button>
                                 <button class="btn btn-delete" onclick="xacNhanXoa('<%= hh.getMaHang() %>', '<%= hh.getTenHang() %>', <%= hh.getSoLuongTonKho() %>)">Xóa</button>
+                                <% } %>
                                 <a href="KiemKeServlet?maHang=<%= hh.getMaHang() %>" class="btn btn-inventory">Kiểm Kê</a>
                             </td>
                         </tr>
